@@ -251,6 +251,18 @@
         }
     }
 
+    @media (max-width: 600px) {
+        .ui-faction {
+            width: 100vw !important;
+            height: 100vh !important;
+            border-radius: 0;
+        }
+
+        body {
+            padding: 0;
+        }
+    }
+
     .close-ui-btn {
         position: fixed;
         top: 3vh;
