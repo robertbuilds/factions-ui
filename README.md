@@ -1,6 +1,6 @@
 # Brotherhood Factions UI
 
-Modern **Factions Interface UI** designed for game servers (FiveM / web preview).
+Modern **Factions Interface UI** designed for game servers (RAGE:MP).
 The interface displays factions, members, leaders, and staff with interactive animations and a clean responsive layout.
 
 ## Preview
