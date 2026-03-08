@@ -1,248 +1,236 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    
     <title>Brotherhood Factions UI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="style.css">
-    <style>
-</style>
+    <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
 
-<div class="overlay"></div>
+    <div class="ui-faction">
 
-<div class="ui-wrapper">
-<div class="top-gradient-fade"></div>
-    <div class="bottom-gradient-fade"></div>
-    <header>
-        <div class="logo-section">
-            <img src="images/factions-logo.png" alt="Factions Logo">
-            <h2>Brotherhood </h2>
-            <h1>Factions</h1>
-        </div>
-    </header>
+        <div class="focus-overlay"></div>
 
-    <div class="factions-overlay"></div>
-
-    <div class="factions-grid">
-
-        <div class="faction-card lspd" data-faction="lspd">
-            <div class="status-pill open">App Status: Open</div>
-            <div class="visual-3d">
-                <img src="images/lspd.png" alt="lspd">
-            </div>
-            <div class="info-section">
-                <h2>LSPD</h2>
-                <p>Leader: <span class="leader-name-display">No One</span></p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>126 / 130</span>
-                </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill" style="width: 96%;"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers" id="lspd-testers">Testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
+        <div class="resolution-warning">
+            <div class="warning-content">
+                <span class="warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <h3>Rezoluție prea mică</h3>
+                <p>Rezoluția pe care o folosești este prea mică, iar interfața nu a putut fi încărcată corect.</p>
+                <p class="resolution-hint">Pentru o experiență optimă, folosește o rezoluție mai mare de 900px lățime.</p>
             </div>
         </div>
 
-        <div class="faction-card hitman" data-faction="hitman">
-            <div class="status-pill closed">App Status: Closed</div>
-            <div class="visual-3d">
-                <img src="images/hitman.png" alt="Hitman">
+        <div class="overlay"></div>
+        <header>
+            <div class="logo-section">
+                <img src="images/factions-logo.png" alt="Factions UI Logo">
+                <h2>Brotherhood </h2>
+                <h1>Factions</h1>
             </div>
-            <div class="info-section">
-                <h2>Hitman Agency</h2>
-                <p>Leader: <span class="leader-name-display">No One</span></p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>82 / 85</span>
-                </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill" style="width: 90%;"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers" id="hitman-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
-            </div>
-        </div>
+        </header>
 
-        <div class="faction-card tow-truck" data-faction="tow-truck">
-            <div class="status-pill closed">App Status: Closed</div>
-            <div class="visual-3d">
-                <img src="images/ttc.png" alt="lspd">
-            </div>
-            <div class="info-section">
-                <h2>Tow Truck Company</h2>
-                <p>Leader: <span class="leader-name-display">No One</span></p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>78 / 85</span>
-                </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill" style="width: 91%;"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
-            </div>
-        </div>
+        <div class="ui-wrapper">
 
-        <div class="faction-card taxi" data-faction="taxi">
-            <div class="status-pill closed">App Status: Closed</div>
-            <div class="visual-3d">
-                <img src="images/taxi-driver.png" alt="Taxi">
-            </div>
-            <div class="info-section">
-                <h2>Taxi Company</h2>
-                <p>Leader: <span class="leader-name-display">No One</span></p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>84 / 85</span>
-                </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill" style="width: 98%;"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
-            </div>
-        </div>
+            <div class="factions-grid">
 
-        <div class="faction-card swat" data-faction="swat">
-            <div class="status-pill closed">App Status: Closed</div>
-            <div class="visual-3d">
-                <img src="images/swat.png" alt="lspd">
-            </div>
-            <div class="info-section">
-                <h2>SWAT</h2>
-                <p>Leader: <span class="leader-name-display">No One</span></p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>0 / 65</span>
+                <div class="faction-card lspd" data-faction="lspd">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/lspd.png" alt="LSPD Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>LSPD</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>126 / 130</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="faction-card ballas" data-faction="ballas">
-            <div class="status-pill open">App Status: Open</div>
-            <div class="visual-3d">
-                <img src="images/ballas.png" alt="lspd">
-            </div>
-            <div class="info-section">
-                <h2>Ballas</h2>
-                <p>Leader: lava</p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>11 / 20</span>
+                <div class="faction-card hitman" data-faction="hitman">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/hitman.png" alt="Hitman Agency Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>Hitman Agency</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>81 / 85</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill" style="width: 55%;"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="faction-card los-vagos" data-faction="los-vagos">
-            <div class="status-pill open">App Status: Open</div>
-            <div class="visual-3d">
-                <img src="images/los-vagos.png" alt="lspd">
-            </div>
-            <div class="info-section">
-                <h2>Los Vagos</h2>
-                <p>Leader: Geo7</p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>19 / 20</span>
+                <div class="faction-card ttc" data-faction="ttc">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/ttc.png" alt="Tow Truck Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>Tow Truck Company</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>84 / 85</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill" style="width: 95%;"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="faction-card grove-street" data-faction="grove-street">
-            <div class="status-pill open">App Status: Open</div>
-            <div class="visual-3d">
-                <img src="images/grove-street.png" alt="lspd">
-            </div>
-            <div class="info-section">
-                <h2>Grove Street</h2>
-                <p>Leader: Dulciku</p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>20 / 20</span>
+                <div class="faction-card taxi" data-faction="taxi">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/taxi.png" alt="Taxi Company Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>Taxi Company</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>77 / 85</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill"></div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="faction-card los-aztecas" data-faction="los-aztecas">
-            <div class="status-pill closed">App Status: Closed</div>
-            <div class="visual-3d">
-                <img src="images/los-aztecas.png" alt="lspd">
-            </div>
-            <div class="info-section">
-                <h2>Los Aztecas</h2>
-                <p>Leader: Marquez</p>
-                <div class="members-count">
-                    <span>Members</span>
-                    <span>20 / 20</span>
+                <div class="faction-card ballas" data-faction="ballas">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/ballas.png" alt="Ballas Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>Ballas</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>11 / 20</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="capacity-bar">
-                    <div class="bar-fill"></div>
+
+                <div class="faction-card los-vagos" data-faction="los-vagos">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/los-vagos.png" alt="Los Vagos Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>Los Vagos</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>20 / 20</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="actions">
-                    <button class="btn btn-find">Locație</button>
-                    <button class="btn btn-testers">testers</button>
-                    <button class="btn btn-teleport">Teleport</button>
+
+                <div class="faction-card grove-street" data-faction="grove-street">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/grove-street.png" alt="Grove Street Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>Grove Street</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>19 / 20</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="faction-card los-aztecas" data-faction="los-aztecas">
+                    <div class="app-status"></div>
+                    <div class="visual-3d">
+                        <img src="images/los-aztecas.png" alt="Los Aztecas Logo">
+                    </div>
+                    <div class="info-section">
+                        <h2>Los Aztecas</h2>
+                        <p>Leader: <span class="leader-name-display">No One</span></p>
+                        <div class="members-count">
+                            <span>Members</span>
+                            <span>20 / 20</span>
+                        </div>
+                        <div class="capacity-bar">
+                            <div class="bar-fill"></div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-location">Locație</button>
+                            <button class="btn btn-testers">Testers</button>
+                            <button class="btn btn-teleport">Teleport</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="card-extend lspd" data-for="lspd">
             <div class="card-extend-header">
-                <h1>Los Santos lspd Department</h1>
-                <p class="manager">
-
-                </p>
+                <h1>Los Santos Police Department</h1>
+                <div class="manager-info"></div> 
             </div>
             <div class="card-extend-content">
                 <h2>Faction Staff</h2>
@@ -252,200 +240,18 @@
                         <div class="table-header">Function</div>
                         <div class="table-header">Status</div>
                     </div>
-
-                    <div class="table-body">
-                        
-                    </div>
+                    <div class="table-body"></div>
                 </div>
             </div>
         </div>
 
-        <div class="card-extend hitman" data-for="hitman">
-            <div class="card-extend-header">
-                <h1>Hitman Agency</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-extend tow-truck" data-for="tow-truck">
-            <div class="card-extend-header">
-                <h1>Tow Truck Company</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-extend taxi" data-for="taxi">
-            <div class="card-extend-header">
-                <h1>Taxi Company</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-extend swat" data-for="swat">
-            <div class="card-extend-header">
-                <h1>SWAT</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-extend ballas" data-for="ballas">
-            <div class="card-extend-header">
-                <h1>Ballas</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-extend los-vagos" data-for="los-vagos">
-            <div class="card-extend-header">
-                <h1>Los Vagos</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-extend grove-street" data-for="grove-street">
-            <div class="card-extend-header">
-                <h1>Los Vagos</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-extend los-aztecas" data-for="los-aztecas">
-            <div class="card-extend-header">
-                <h1>Los Vagos</h1>
-                <p class="manager">
-                    
-                </p>
-            </div>
-            <div class="card-extend-content">
-                <h2>Faction Staff</h2>
-                <div class="faction-staff">
-                    <div class="table-header-container">
-                        <div class="table-header">Member</div>
-                        <div class="table-header">Function</div>
-                        <div class="table-header">Status</div>
-                    </div>
-
-                    <div class="table-body">
-                        
-                    </div>
-                </div>
-            </div>
+        <div class="close-ui-btn">
+            <span>ESC</span>
+            <p>CLOSE</p>
         </div>
 
     </div>
-</div>
 
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>

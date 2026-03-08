@@ -1,435 +1,612 @@
-        const barObserverOptions = { threshold: 0.5 };
-        const barObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const container = entry.target;
-                    const bar = container.querySelector('.bar-fill');
-                    const card = container.closest('.faction-card');
-                    const countSpan = card.querySelector('.members-count span:last-child');
-                    if (countSpan && bar) {
-                        const countText = countSpan.innerText.trim();
-                        const parts = countText.split('/');
-                        if (parts.length === 2) {
-                            const procent = (parseInt(parts[0]) / parseInt(parts[1])) * 100;
-                            requestAnimationFrame(() => {
-                                requestAnimationFrame(() => {
-                                    bar.style.setProperty('width', procent + '%', 'important');
-                                });
-                            });
-                            barObserver.unobserve(container);
-                        }
-                    }
-                }
-            });
-        }, barObserverOptions);
-
-        function getMoveX(card) {
-            const isSmall = window.innerWidth < 700;
-            
-            if (card.classList.contains('lspd')) return 50;
-            if (card.classList.contains('hitman')) return -260;
-            if (card.classList.contains('tow-truck')) return 260;
-            if (card.classList.contains('taxi')) return -50;
-            if (card.classList.contains('swat')) return 50;
-            if (card.classList.contains('ballas')) return -260;
-            if (card.classList.contains('los-vagos')) return 260;
-            if (card.classList.contains('grove-street')) return -50;
-            if (card.classList.contains('los-aztecas')) {
-                return isSmall ? -30 : -410; // Aici se face magia pentru ecran mic
-            }
-            return -100; // Valoarea default
-        }
-
-        document.querySelectorAll('.capacity-bar').forEach(barContainer => {
-            barObserver.observe(barContainer);
-        });
-
-        const isSmallScreen = window.innerWidth < 700;
-
-        document.querySelectorAll('.faction-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const intensity = card.classList.contains('active-card') ? 60 : 30;
-                const rotateX = (y - centerY) / -intensity;
-                const rotateY = (centerX - x) / -intensity;
-                let moveX = getMoveX(card);
-
-                if (card.classList.contains('active-card')) {
-                    const savedMoveY = card._centerMoveY || 0;
-                    card.style.transform = `perspective(1000px) scale(1.12) translateX(${moveX}px) translateY(${savedMoveY}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                } else {
-                    card.style.transform = `perspective(1000px) translateY(-10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                }
-
-                if (card.classList.contains('active-card')) {
-                    const savedMoveY = card._centerMoveY || 0;
-                    card.style.transform = `perspective(1000px) scale(1.12) translateX(${moveX}px) translateY(${savedMoveY}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                } else {
-                    card.style.transform = `perspective(1000px) translateY(-10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                }
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transition = 'transform 0.25s ease-out, border-color 0.3s ease-out';
-                let moveX = getMoveX(card);
-
-                if (card.classList.contains('active-card')) {
-                    const savedMoveY = card._centerMoveY || 0;
-                    card.style.transform = `perspective(1000px) scale(1.12) translateX(${moveX}px) translateY(${savedMoveY}px) rotateX(0) rotateY(0)`;
-                } else {
-                    card.style.transform = `perspective(1000px) translateY(0) rotateX(0) rotateY(0)`;
-                }
-
-                if (card.classList.contains('active-card')) {
-                    const savedMoveY = card._centerMoveY || 0;
-                    card.style.transform = `perspective(1000px) scale(1.12) translateX(${moveX}px) translateY(${savedMoveY}px) rotateX(0) rotateY(0)`;
-                } else {
-                    card.style.transform = `perspective(1000px) translateY(0) rotateX(0) rotateY(0)`;
-                }
-            });
-        });
-
-        const btntesters = document.querySelectorAll('.btn-testers');
-        const factionsGrid = document.querySelector('.factions-grid');
-        const factionsOverlay = document.querySelector('.factions-overlay');
-        const cardExtend = document.querySelector('.card-extend');
-
-        btntesters.forEach(btn => {
-            btn.addEventListener('click', function(event) {
-                event.stopPropagation();
-                const card = this.closest('.faction-card');
-                const factionName = card.getAttribute('data-faction');
-                
-                const specificExtend = document.querySelector(`.card-extend[data-for="${factionName}"]`);
-
-                const gridRect = factionsGrid.getBoundingClientRect();
-                const cardRect = card.getBoundingClientRect();
-
-                const isPartiallyHiddenTop = cardRect.top < gridRect.top - 2;
-                const isPartiallyHiddenBottom = cardRect.bottom > gridRect.bottom + 2;
-                
-                if (isPartiallyHiddenTop || isPartiallyHiddenBottom) {
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    return;
-                }
-
-                let moveX = getMoveX(card);
-
-                const freshRect = card.getBoundingClientRect();
-                const transformStr = card.style.transform || '';
-                const tyMatch = transformStr.match(/translateY\(([\d.-]+)px\)/);
-                const currentTY = tyMatch ? parseFloat(tyMatch[1]) : 0;
-                const cardCenterY = freshRect.top + freshRect.height / 2 - currentTY;
-                const viewportCenterY = window.innerHeight / 2;
-                let moveY = viewportCenterY - cardCenterY;
-                if (card.classList.contains('los-aztecas')) { moveY += 20; }
-
-                document.querySelectorAll('.faction-card').forEach(c => {
-                    c.classList.remove('active-card');
-                    c._centerMoveY = 0;
-                });
-                document.querySelectorAll('.card-extend').forEach(e => e.classList.remove('show'));
-
-                card.classList.add('active-card');
-                card._centerMoveY = moveY;
-
-                card.style.transition = 'transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease';
-                card.style.transform = `perspective(1000px) scale(1.12) translateX(${moveX}px) translateY(${moveY}px)`;
-
-                renderStaffForFaction(factionName);
-
-                if (specificExtend) {
-                    specificExtend.classList.add('show');
-                    const isLeftSide = ['tow-truck', 'taxi', 'los-vagos', 'grove-street'].includes(factionName);
-                    const xDist = isLeftSide ? '-115%' : '15%';
-                }
-                
-                if (factionsOverlay) factionsOverlay.classList.add('active');
-                if (factionsGrid) {
-                    factionsGrid.classList.add('has-active-card');
-                    factionsGrid.style.overflow = 'hidden'; 
-                }
-            });
-        });
-
-        window.addEventListener('click', function(event) {
-        const activeCard = document.querySelector('.faction-card.active-card');
-        const activeExtend = document.querySelector('.card-extend.show');
-
-        if (!activeCard) return;
-
-        if (activeExtend) {
-            if (activeExtend.contains(event.target) || activeCard.contains(event.target)) return;
-            activeExtend.classList.remove('show');
-            activeExtend.style.transform = '';
-        } else {
-            if (activeCard.contains(event.target)) return;
-        }
-
-        activeCard.style.transition = 'transform 0.3s ease-out';
-        activeCard.classList.remove('active-card');
-        activeCard._centerMoveY = 0;
-        activeCard.style.transform = `perspective(1000px) translateY(0) rotateX(0) rotateY(0)`;
-        
-        if (factionsOverlay) factionsOverlay.classList.remove('active');
-        if (factionsGrid) {
-            factionsGrid.classList.remove('has-active-card');
-            factionsGrid.style.overflow = 'auto';
-        }
-    });
-
-    function addMemberCircles(root = document) {
-        const nameSelectors = ['.leader-name', '.co-leader-name', '.tester-name'];
-        
-        nameSelectors.forEach(selector => {
-            root.querySelectorAll(selector).forEach(nameEl => {
-                if (!nameEl.previousElementSibling || !nameEl.previousElementSibling.classList.contains('member-circle')) {
-                    const circleWrapper = document.createElement('div');
-                    circleWrapper.classList.add('member-circle');
-
-                    const circle = document.createElement('span');
-                    circle.classList.add('circle');
-                    
-                    circleWrapper.appendChild(circle);
-                    
-                    nameEl.parentNode.insertBefore(circleWrapper, nameEl);
-                }
-            });
-        });
-    }
-
-    addMemberCircles();
-
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeType === 1) { 
-                    addMemberCircles(node);
-                }
-            });
-        });
-    });
-
-    observer.observe(document.querySelector('.faction-staff'), {
-        childList: true,
-        subtree: true
-    });
-
     const rankConfig = {
-
-        "manager": { 
-            badgeClass: "manager-badge", 
-            nameClass: "manager-name", 
-            icon: "fa-user-tie", 
-            label: "Manager" 
-        },
-        "leader": {
-            badgeClass: "leader-badge",
-            nameClass: "leader-name",
-            icon: "fa-crown",
-            label: "Leader"
-        },
-
-        "co-leader": { 
-            badgeClass: "co-leader-badge", 
-            nameClass: "co-leader-name", 
-            icon: "fa-shield", 
-            label: "Co-Leader" 
-        },
-
-        "tester": { 
-            badgeClass: "tester-badge", 
-            nameClass: "tester-name", 
-            icon: "fa-magnifying-glass", 
-            label: "Tester" 
-        }
-    }
+        "manager": { badgeClass: "manager-badge", nameClass: "manager-name", icon: "fa-user-tie", label: "Manager" },
+        "leader": { badgeClass: "leader-badge", nameClass: "leader-name", icon: "fa-crown", label: "Leader" },
+        "co-leader": { badgeClass: "co-leader-badge", nameClass: "co-leader-name", icon: "fa-shield", label: "Co-Leader" },
+        "tester": { badgeClass: "tester-badge", nameClass: "tester-name", icon: "fa-magnifying-glass", label: "Tester" }
+    };
 
     const factionMembers = {
-    "lspd": {
-        manager: {
-            name: "Kaos",
-            online: true
+        "lspd": {
+            applicationsOpen: true,
+            manager: { name: "Kaos", online: true },
+            staff: [
+                { name: "KeTeX", rank: "leader", online: true },
+                { name: "rowly", rank: "co-leader", online: false },
+                { name: "KeTeX", rank: "leader", online: true },
+                { name: "rowly", rank: "co-leader", online: false },
+                { name: "KeTeX", rank: "leader", online: true },
+                { name: "iusteeN", rank: "co-leader", online: false },
+                { name: "KeTeX", rank: "leader", online: true },
+                { name: "rowly", rank: "co-leader", online: false },
+                { name: "SilyMike", rank: "tester", online: true }
+            ]
         },
-        staff: [
-            { name: "KeTeX", rank: "leader", online: true },
-            { name: "rowly", rank: "co-leader", online: false },
-            { name: "SilyMike", rank: "tester", online: true }
-        ]
-    },
-    "hitman": {
-        manager: {
-            name: "RobertxD",
-            online: false
+        "hitman": {
+            applicationsOpen: false,
+            manager: { name: "RobertxD", online: false },
+            staff: [
+                { name: "Davidd", rank: "leader", online: true },
+                { name: "Lamba", rank: "co-leader", online: false },
+                { name: "Davidd", rank: "leader", online: true },
+                { name: "Lamba", rank: "co-leader", online: false },
+                { name: "Davidd", rank: "leader", online: true },
+                { name: "Lamba", rank: "co-leader", online: false },
+                { name: "Cartof", rank: "tester", online: false }    
+            ]
         },
-        staff: [
-            { name: "Davidd", rank: "leader", online: true },
-            { name: "Lamba", rank: "co-leader", online: false },
-            { name: "Cartof", rank: "tester", online: false }    
-        ]
-    },
-    "tow-truck": {
-        manager: {
-            name: "hasalf",
-            online: true
+        "ttc": {
+            applicationsOpen: false,
+            manager: { name: "hasalf", online: true },
+            staff: [
+                { name: "Bunicul", rank: "leader", online: false },
+                { name: "Tele", rank: "co-leader", online: true },
+                { name: "laarissaa", rank: "tester", online: false }
+            ]
         },
-        staff: [
-            { name: "Bunicul", rank: "leader", online: false },
-            { name: "Tele", rank: "co-leader", online: true },
-            { name: "laarissaa", rank: "tester", online: false }
-        ]
-    },
-    "taxi": {
-        manager: {
-            name: "AlexMatew",
-            online: false
+        "taxi": {
+            applicationsOpen: true,
+            manager: { name: "AlexMatew", online: false },
+            staff: [
+                { name: "C_Jay", rank: "leader", online: false },
+                { name: "raGGaBAws", rank: "co-leader", online: true },
+                { name: "C_Jay", rank: "leader", online: false },
+                { name: "raGGaBAws", rank: "co-leader", online: true },
+                { name: "C_Jay", rank: "leader", online: false },
+                { name: "raGGaBAws", rank: "co-leader", online: true },
+                { name: "PiqueS", rank: "tester", online: true }
+            ]
         },
-        staff: [
-            { name: "C_Jay", rank: "leader", online: false },
-            { name: "raGGaBAws", rank: "co-leader", online: true },
-            { name: "PiqueS", rank: "tester", online: true }
-        ]
-    },
-    "swat": {
-        manager: {
-            name: "No One",
-            online: false
+        "swat": {
+            applicationsOpen: false,
+            manager: { name: "No One", online: false },
+            staff: [
+                { name: "No One", rank: "leader", online: false },
+                { name: "Test2", rank: "co-leader", online: false },
+                { name: "Test3", rank: "tester", online: true}
+            ]
         },
-        staff: [
-           { name: "No One", rank: "leader", online: false },
-           { name: "Test2", rank: "co-leader", online: false },
-           { name: "Test3", rank: "tester", online: true}
-        ]
-    },
-    "ballas": {
-        manager: {
-            name: "Archer",
-            online: true
+        "ballas": {
+            applicationsOpen: true,
+            manager: { name: "Archer", online: true },
+            staff: [
+                { name: "lava", rank: "leader", online: false },
+                { name: "LuisVasile24", rank: "co-leader", online: true },
+                { name: "Cartof", rank: "tester", online: true}
+            ]
         },
-        staff: [
-            { name: "lava", rank: "leader", online: false },
-            { name: "LuisVasile24", rank: "co-leader", online: true },
-            { name: "Cartof", rank: "tester", online:  true}
-        ]
-    },
-    "los-vagos": {
-        manager: {
-            name: "Andi",
-            online: true
+        "los-vagos": {
+            applicationsOpen: false,
+            manager: { name: "Andi", online: true },
+            staff: [
+                { name: "Geo7", rank: "leader", online: false },
+                { name: "Citiregu", rank: "co-leader", online: false },
+                { name: "K3zR", rank: "tester", online: true }
+            ]
         },
-        staff: [
-            { name: "Geo7", rank: "leader", online: false },
-            { name: "Citiregu", rank: "co-leader", online: false },
-            { name: "K3zR", rank: "tester", online: true }
-        ]
-    },
-    "grove-street": {
-        manager: {
-            name: "Archer",
-            online: true
+        "grove-street": {
+            applicationsOpen: false,
+            manager: { name: "Archer", online: true },
+            staff: [
+                { name: "Dulciku", rank: "leader", online: false },
+                { name: "PRiNCE", rank: "co-leader", online: true },
+                { name: "nusuntallex", rank: "tester", online: false}
+            ]
         },
-        staff: [
-            { name: "Dulciku", rank: "leader", online: false },
-            { name: "PRiNCE", rank: "co-leader", online: true },
-            { name: "nusuntallex", rank: "tester", online:  false}
-        ]
-    },
-    "los-aztecas": {
-        manager: {
-            name: "Andi",
-            online: true
-        },
-        staff: [
-            { name: "Marquez", rank: "leader", online: true },
-            { name: "bkm", rank: "co-leader", online: false },
-            { name: "palboy", rank: "tester", online:  false}
-        ]
-    }
-};
+        "los-aztecas": {
+            applicationsOpen: false,
+            manager: { name: "Andi", online: true },
+            staff: [
+                { name: "Marquez", rank: "leader", online: true },
+                { name: "bkm", rank: "co-leader", online: false },
+                { name: "palboy", rank: "tester", online: false}
+            ]
+        }
+    };
 
-function renderStaffForFaction(factionKey) {
-    console.log("Rendering faction:", factionKey);
-    const data = factionMembers[factionKey];
-    const card = document.querySelector(`.card-extend[data-for="${factionKey}"]`);
-    
-    if (!card) {
-        console.error("Extended card missing for:", factionKey);
-        return;
-    }
-    if (!data) {
-        console.error("No information about factionsMembers for:", factionKey);
-        return;
-    }
+    const factionNames = {
+        'lspd': 'Los Santos Police Department', 'hitman': 'Hitman Agency', 'ttc': 'Tow Truck Company', 
+        'taxi': 'Taxi Company', 'swat': 'SWAT.', 'ballas': 'Ballas', 
+        'los-vagos': 'Los Vagos', 'grove-street': 'Grove Street', 'los-aztecas': 'Los Aztecas'
+    };
 
-    const managerContainer = card.querySelector('.manager');
-    if (managerContainer) {
-        const m = data.manager;
-        const statusClass = m.online ? "online-badge" : "offline-badge";
-        const statusIcon = m.online ? "fa-circle-check" : "fa-circle-xmark";
-
-        managerContainer.innerHTML = `
-            <span class="manager-name">${m.name}</span>
-            <span class="manager-badge"><i class="fas fa-user-tie"></i> Manager</span>
-            <span class="${statusClass}"><i class="fa-solid ${statusIcon}"></i> ${m.online ? 'Online' : 'Offline'}</span>
-        `;
-    }
-
-    const tableBody = card.querySelector('.table-body');
-    if (tableBody) {
-        console.log("Members generated!");
-        tableBody.innerHTML = ""; 
+    document.addEventListener('DOMContentLoaded', () => {
+        updateLeaderNames();
+        updateApplicationStatus();
+        animateCapacityAndMembers();
         
-        data.staff.forEach(member => {
-            const config = rankConfig[member.rank];
-            const sClass = member.online ? "online-badge" : "offline-badge";
-            const sIcon = member.online ? "fa-circle-check" : "fa-circle-xmark";
+        const MAX_TILT_ANGLE = 7; 
 
-            const row = document.createElement("div");
-            row.className = "member-row";
-            row.innerHTML = `
-                <div class="table-cell"><span class="${config.nameClass}">${member.name}</span></div>
-                <div class="table-cell">
-                    <span class="${config.badgeClass}"><i class="fa-solid ${config.icon}"></i> ${config.label}</span>
-                </div>
-                <div class="table-cell">
-                    <span class="${sClass}"><i class="fa-solid ${sIcon}"></i> ${member.online ? 'Online' : 'Offline'}</span>
-                </div>
-            `;
-            tableBody.appendChild(row);
+        function applyTilt(cardElement) {
+            cardElement.style.transformOrigin = 'center center';
+            cardElement.style.backfaceVisibility = 'hidden';
+            cardElement.style.webkitFontSmoothing = 'antialiased';
+
+            let rafId = null;
+
+            cardElement.addEventListener('mouseenter', () => {
+                if (isAnimating || cardElement.style.opacity === '0') return;
+                cardElement.style.transition = 'transform 0.15s ease-out, border 0.3s ease, box-shadow 0.3s ease';
+            });
+
+            cardElement.addEventListener('mousemove', (e) => {
+                if (isAnimating || cardElement.style.opacity === '0') return;
+
+                if (rafId) window.cancelAnimationFrame(rafId);
+
+                rafId = window.requestAnimationFrame(() => {
+                    const rect = cardElement.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const xPct = (x / rect.width - 0.5) * 2;
+                    const yPct = (y / rect.height - 0.5) * 2;
+
+                    const rotateX = -yPct * MAX_TILT_ANGLE;
+                    const rotateY = xPct * MAX_TILT_ANGLE;
+
+                    let currentBaseTransform = cardElement.classList.contains('faction-card-clone')
+                        ? (cardElement.dataset.baseTransform || '')
+                        : 'translateY(-15px)'; 
+
+                    cardElement.style.transition = 'transform 0.1s ease-out, border 0.3s ease, box-shadow 0.3s ease';
+                    cardElement.style.transform = `${currentBaseTransform} perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
+                });
+            });
+
+            cardElement.addEventListener('mouseleave', () => {
+                if (rafId) {
+                    window.cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+
+                if (isAnimating || cardElement.classList.contains('locked-hover')) return;
+
+                cardElement.style.transition = 'transform 0.4s ease-out, border 0.3s ease, box-shadow 0.3s ease';
+
+                if (cardElement.classList.contains('faction-card-clone')) {
+                    let baseTransform = cardElement.dataset.baseTransform || '';
+                    cardElement.style.transform = `${baseTransform} perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)`;
+                } else {
+                    cardElement.style.transform = '';
+                }
+            });
+        }
+
+        const allCards = document.querySelectorAll('.faction-card');
+        allCards.forEach(card => applyTilt(card));
+
+        const testersBtns = document.querySelectorAll('.btn-testers');
+        const uiFaction = document.querySelector('.ui-faction');
+        const factionsGrid = document.querySelector('.factions-grid'); 
+        
+        let focusOverlay = document.querySelector('.focus-overlay');
+        if (!focusOverlay) {
+            focusOverlay = document.createElement('div');
+            focusOverlay.className = 'focus-overlay';
+            uiFaction.appendChild(focusOverlay);
+        }
+
+        let activeOriginalCard = null;
+        let activeClone = null;
+        let isAnimating = false; 
+
+        const rightSideFactions = ['ttc', 'taxi', 'grove-street', 'los-aztecas'];
+
+        testersBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const card = this.closest('.faction-card');
+
+                const grid = document.querySelector('.factions-grid');
+                const cardRect = card.getBoundingClientRect();
+                const gridRect = grid.getBoundingClientRect();
+
+                // Verificăm vizibilitatea reală
+                const isFullyVisible = (cardRect.top >= gridRect.top - 5) && (cardRect.bottom <= gridRect.bottom + 5);
+
+                if (!isFullyVisible) {
+                    // Înghețăm cardul vizual sus ca să nu cadă
+                    card.classList.add('locked-hover');
+                    card.style.setProperty('transform', 'translateY(-15px) translateZ(0)', 'important');
+                    card.style.setProperty('transition', 'transform 0.3s ease', 'important');
+                    
+                    grid.style.pointerEvents = 'none';
+
+                    // Calcul scroll manual la centru
+                    const targetScrollTop = grid.scrollTop + (cardRect.top - gridRect.top) - (gridRect.height / 2) + (cardRect.height / 2);
+
+                    grid.scrollTo({
+                        top: targetScrollTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    setTimeout(() => {
+                        grid.style.pointerEvents = 'auto';
+                        card.classList.remove('locked-hover');
+                        
+                        if (!card.matches(':hover')) {
+                            card.style.transform = 'translateZ(0)';
+                        }
+                    }, 550);
+
+                    return; 
+                }
+
+                if (card.classList.contains('capacity-animating')) {
+                    showNotification("Așteaptă până când interfața este încărcată complet!");
+                    return; // Oprim execuția ca să nu deschidă cardul
+                }
+
+                // Păstrăm blocajul pentru celelalte animații de UI (ca să nu faci spam de click)
+                if (isAnimating || activeOriginalCard || activeClone) return;
+
+                card.style.transition = 'none';
+                card.style.transform = ''; 
+
+                const uiRect = uiFaction.getBoundingClientRect();
+
+                // Preluăm mărimile fizice, reale, care exclud deformarea 3D
+                const exactWidth = card.offsetWidth;
+                const exactHeight = card.offsetHeight;
+
+                isAnimating = true;
+                activeOriginalCard = card;
+
+                const startX = cardRect.left - uiRect.left;
+                const startY = cardRect.top - uiRect.top;
+
+                activeClone = card.cloneNode(true);
+                applyTilt(activeClone);
+
+                activeClone.style.transition = 'none'; 
+                activeClone.classList.add('faction-card-clone');
+                activeClone.style.width = `${exactWidth}px`;
+                activeClone.style.height = `${exactHeight}px`;
+                
+                activeClone.style.setProperty('left', '0px', 'important');
+                activeClone.style.setProperty('top', '0px', 'important');
+                activeClone.style.setProperty('margin', '0px', 'important');
+                
+                const initialTransform = `translate(${startX}px, ${startY}px)`;
+                activeClone.style.transform = `${initialTransform} perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                activeClone.dataset.baseTransform = initialTransform;
+
+                uiFaction.appendChild(activeClone);
+
+                card.style.opacity = '0';
+                card.style.pointerEvents = 'none';
+                focusOverlay.classList.add('active');
+                factionsGrid.style.overflow = 'hidden';
+
+                void activeClone.offsetWidth; 
+
+                const factionKey = card.getAttribute('data-faction'); 
+                const targetY = (uiRect.height / 2) - (exactHeight / 2);
+                let targetCardX, targetPanelX, startPanelX;
+                
+                const cardExtend = document.querySelector('.card-extend');
+                cardExtend.className = `card-extend ${factionKey}`; 
+                cardExtend.style.height = `${exactHeight}px`;
+                
+                cardExtend.style.setProperty('position', 'absolute', 'important');
+                cardExtend.style.setProperty('left', '0px', 'important');
+                cardExtend.style.setProperty('top', '0px', 'important');
+                cardExtend.style.setProperty('margin', '0px', 'important');
+
+                const panelWidth = cardExtend.offsetWidth || (uiRect.width * 0.35);
+
+                if (rightSideFactions.includes(factionKey)) {
+                    targetCardX = (uiRect.width * 0.78) - (exactWidth / 2);
+                    targetPanelX = (uiRect.width * 0.3) - (panelWidth / 2);
+                    startPanelX = -panelWidth - 100;
+                } else {
+                    targetCardX = (uiRect.width * 0.22) - (exactWidth / 2);
+                    targetPanelX = (uiRect.width * 0.7) - (panelWidth / 2);
+                    startPanelX = uiRect.width + 100;
+                }
+
+                populateExtendedCard(factionKey);
+
+                cardExtend.style.transition = 'none';
+                cardExtend.style.transform = `translate(${startPanelX}px, ${targetY}px) scale(0.95)`;
+
+                void cardExtend.offsetWidth; 
+
+                const finalCardTransform = `translate(${targetCardX}px, ${targetY}px)`;
+                activeClone.dataset.baseTransform = finalCardTransform;
+
+                activeClone.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                activeClone.style.transform = `${finalCardTransform} perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+
+                cardExtend.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease, border 0.3s ease, box-shadow 0.3s ease';
+
+                setTimeout(() => {
+                    cardExtend.style.transform = `translate(${targetPanelX}px, ${targetY}px) scale(1)`;
+                    cardExtend.classList.add('active');
+                    isAnimating = false;
+                }, 50); 
+            });
         });
-    } else {
-        console.error("Error, player has not found.");
+
+        function closeActiveCard() {
+            if (isAnimating || !activeClone || !activeOriginalCard) return;
+            isAnimating = true; 
+
+            const cardExtend = document.querySelector('.card-extend');
+            const factionKey = activeOriginalCard.getAttribute('data-faction');
+
+            factionsGrid.style.pointerEvents = 'none';
+
+            if (cardExtend) {
+                const panelWidth = cardExtend.offsetWidth || 500;
+                const uiRect = uiFaction.getBoundingClientRect();
+                const outPanelX = rightSideFactions.includes(factionKey) ? -panelWidth - 100 : uiRect.width + 100;
+                const targetY = (uiRect.height / 2) - (activeClone.offsetHeight / 2);
+
+                cardExtend.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease, border 0.3s ease, box-shadow 0.3s ease';
+                cardExtend.classList.remove('active');
+                cardExtend.style.transform = `translate(${outPanelX}px, ${targetY}px) scale(0.95)`;
+            }
+
+            focusOverlay.classList.remove('active');
+
+            const restingRect = activeOriginalCard.getBoundingClientRect();
+            const uiRect = uiFaction.getBoundingClientRect();
+            const restX = restingRect.left - uiRect.left;
+            const restY = restingRect.top - uiRect.top;
+
+            const restingTransform = `translate(${restX}px, ${restY}px)`;
+            activeClone.dataset.baseTransform = restingTransform;
+
+            activeClone.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            activeClone.style.transform = `${restingTransform} perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+
+            setTimeout(() => {
+                if (activeClone) {
+                    activeClone.remove();
+                    activeClone = null;
+                }
+                if (activeOriginalCard) {
+                    activeOriginalCard.style.transform = 'translateZ(0)';
+                    activeOriginalCard.style.opacity = '1';
+                    activeOriginalCard.style.pointerEvents = 'auto';
+                    activeOriginalCard = null;
+                }
+                
+                factionsGrid.style.pointerEvents = 'auto';
+                factionsGrid.style.overflow = '';
+                isAnimating = false;
+            }, 400); 
+        }
+
+        if (focusOverlay) focusOverlay.addEventListener('click', closeActiveCard);
+        const closeBtn = document.querySelector('.close-ui-btn');
+        if (closeBtn) closeBtn.addEventListener('click', closeActiveCard);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeActiveCard();
+        });
+    });
+
+    function populateExtendedCard(factionKey) {
+        const data = factionMembers[factionKey];
+        if (!data) return;
+
+        const extendCard = document.querySelector('.card-extend');
+        const headerTitle = extendCard.querySelector('.card-extend-header h1');
+        const managerInfo = extendCard.querySelector('.manager-info');
+        const tableBody = extendCard.querySelector('.table-body');
+
+        tableBody.scrollTop = 0;
+
+        headerTitle.textContent = factionNames[factionKey] || factionKey.toUpperCase();
+
+        if (data.manager && data.manager.name !== "No One") {
+            const isOnline = data.manager.online;
+            const statusClass = isOnline ? 'online-badge' : 'offline-badge';
+            const statusIcon = isOnline ? 'fa-circle-check' : 'fa-circle-xmark';
+            const statusText = isOnline ? 'Online' : 'Offline';
+
+            managerInfo.innerHTML = `
+                <span class="manager-name">${data.manager.name}</span>
+                <span class="manager-badge"><i class="fa-solid fa-user-tie"></i> Manager</span>
+                <span class="${statusClass}"><i class="fa-solid ${statusIcon}"></i> ${statusText}</span>
+            `;
+            managerInfo.style.display = 'flex';
+        } else {
+            managerInfo.style.display = 'none';
+        }
+
+        tableBody.innerHTML = '';
+        
+        if (data.staff) {
+            data.staff.forEach(member => {
+                const rankData = rankConfig[member.rank];
+                const statusClass = member.online ? 'online-badge' : 'offline-badge';
+                const statusIcon = member.online ? 'fa-circle-check' : 'fa-circle-xmark';
+                const statusText = member.online ? 'Online' : 'Offline';
+
+                const row = document.createElement('div');
+                row.className = 'member-row';
+
+                row.innerHTML = `
+                    <div class="table-cell"><div class="circle" style="margin-left: 0;"></div></div>
+                    <div class="table-cell"><span class="member-name">${member.name}</span></div>
+                    <div class="table-cell"><span class="${rankData.badgeClass}"><i class="fa-solid ${rankData.icon}"></i> ${rankData.label}</span></div>
+                    <div class="table-cell"><span class="${statusClass}"><i class="fa-solid ${statusIcon}"></i> ${statusText}</span></div>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
     }
 
-    if (typeof addMemberCircles === "function") addMemberCircles(card);
-}
+    function updateLeaderNames() {
+        document.querySelectorAll('.faction-card[data-faction]').forEach(card => {
+            const factionKey = card.getAttribute('data-faction');
+            const data = factionMembers[factionKey];
+            if (data && data.staff) {
+                const leader = data.staff.find(m => m.rank === "leader");
+                const display = card.querySelector('.leader-name-display');
+                if (leader && display && leader.name !== "No One") display.textContent = leader.name;
+            }
+        });
+    }
 
-function updateLeaderNames() {
-    const cards = document.querySelectorAll('.faction-card[data-faction]');
+    function updateApplicationStatus() {
+        document.querySelectorAll('.faction-card[data-faction]').forEach(card => {
+            const factionKey = card.getAttribute('data-faction');
+            const data = factionMembers[factionKey];
+            const statusElement = card.querySelector('.app-status'); 
+            if (data && statusElement) {
+                statusElement.textContent = `App Status: ${data.applicationsOpen ? 'Open' : 'Closed'}`;
+                statusElement.className = `app-status ${data.applicationsOpen ? 'open' : 'closed'}`;
+            }
+        });
+    }
 
-    cards.forEach(card => {
-        const factionKey = card.getAttribute('data-faction');
-        const data = factionMembers[factionKey];
+    function animateCapacityAndMembers() {
+        const gridContainer = document.querySelector('.factions-grid');
+        const cards = document.querySelectorAll('.faction-card');
 
-        if (data && data.staff) {
-            const leader = data.staff.find(m => m.rank === "leader");
+        cards.forEach(card => {
+            const membersCountSpan = card.querySelectorAll('.members-count span')[1];
+            const barFill = card.querySelector('.bar-fill');
             
-            if (leader) {
-                const leaderDisplay = card.querySelector('.leader-name-display');
-                if (leaderDisplay) {
-                    leaderDisplay.textContent = leader.name;
+            const parts = membersCountSpan.textContent.split('/');
+            card.dataset.targetCurrent = parseInt(parts[0]);
+            card.dataset.maxMembers = parseInt(parts[1]);
+
+            // Stare inițială: cifrele la 0, bara la 0%
+            membersCountSpan.textContent = `0 / ${card.dataset.maxMembers}`;
+            barFill.style.width = '0%';
+            
+            // Marcăm cardul ca fiind "în animație" încă de la început
+            card.classList.add('capacity-animating');
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            const intersecting = entries.filter(e => e.isIntersecting);
+            
+            intersecting.forEach((entry, index) => {
+                const card = entry.target.closest('.faction-card');
+                if (card && !card.classList.contains('card-visible')) {
+                    observer.unobserve(entry.target);
+
+                    // Delay pentru intrarea cardului (picat de sus)
+                    setTimeout(() => {
+                        card.classList.add('card-visible');
+                        // Pornim numărătoarea și bara simultan
+                        runSyncAnimation(card);
+                    }, index * 190); 
+                }
+            });
+        }, { root: gridContainer, threshold: 0.1 });
+
+        cards.forEach(card => {
+            const capBar = card.querySelector('.capacity-bar');
+            if (capBar) observer.observe(capBar);
+        });
+
+        function runSyncAnimation(card) {
+            const membersCountSpan = card.querySelectorAll('.members-count span')[1];
+            const barFill = card.querySelector('.bar-fill');
+            
+            const targetCurrent = parseInt(card.dataset.targetCurrent);
+            const maxMembers = parseInt(card.dataset.maxMembers);
+            const targetPercent = (targetCurrent / maxMembers) * 100;
+
+            const duration = 1500; 
+            const startTime = performance.now();
+
+            function frame(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing: face animația să încetinească spre final (smooth)
+                const ease = 1 - Math.pow(1 - progress, 3);
+
+                // ACTUALIZARE SIMULTANĂ
+                // 1. Cifrele
+                const currentNum = Math.floor(targetCurrent * ease);
+                membersCountSpan.textContent = `${currentNum} / ${maxMembers}`;
+
+                // 2. Bara (calculăm procentul exact din progres)
+                const currentWidth = (targetPercent * ease).toFixed(2);
+                barFill.style.width = currentWidth + '%';
+
+                if (progress < 1) {
+                    requestAnimationFrame(frame);
                 } else {
-                    const leaderParagraph = card.querySelector('.info-section p');
-                    if (leaderParagraph) {
-                        leaderParagraph.textContent = `Leader: ${leader.name}`;
-                    }
+                    // Final fix
+                    membersCountSpan.textContent = `${targetCurrent} / ${maxMembers}`;
+                    barFill.style.width = targetPercent + '%';
+                    
+                    // ABIA ACUM scoatem clasa, permițând click-ul
+                    card.classList.remove('capacity-animating');
                 }
             }
+            requestAnimationFrame(frame);
         }
-    });
-}
+    }
 
-document.addEventListener('DOMContentLoaded', updateLeaderNames);
+    // --- FUNCȚIE GLOBALĂ PENTRU NOTIFICĂRI ---
+    function showNotification(message, duration = 3000) { // Default 4 secunde
+        let container = document.getElementById('notification-container');
+        
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notification-container';
+            document.querySelector('.ui-faction').appendChild(container);
+        }
+
+        // Creăm structura completă a notificării
+        const notif = document.createElement('div');
+        notif.className = 'custom-notification';
+        notif.innerHTML = `
+            <div class="notif-header">
+                <div class="notif-title-area">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Attention</span>
+                </div>
+                <i class="fa-solid fa-xmark notif-close"></i>
+            </div>
+            <div class="notif-body">
+                ${message}
+            </div>
+            <div class="notif-progress-container">
+                <div class="notif-progress-bar"></div>
+            </div>
+        `;
+
+        container.appendChild(notif);
+
+        const closeBtn = notif.querySelector('.notif-close');
+        const progressBar = notif.querySelector('.notif-progress-bar');
+        
+        let hideTimeout;
+
+        const triggerClose = () => {
+            notif.classList.remove('show');
+            clearTimeout(hideTimeout); // Oprim timer-ul dacă dăm click pe X
+            
+            setTimeout(() => {
+                if (notif.parentNode) notif.remove();
+            }, 400); // Așteptăm să se termine efectul de slide out
+        };
+
+        // Eveniment pe click pe X
+        closeBtn.addEventListener('click', triggerClose);
+
+        // Animăm intrarea
+        setTimeout(() => {
+            notif.classList.add('show');
+            
+            // După ce a intrat pe ecran, pornim golirea barei fix pe durata timer-ului
+            progressBar.style.transition = `width ${duration}ms linear`;
+            progressBar.style.width = '0%';
+        }, 10); 
+
+        // Timer-ul de auto-închidere
+        hideTimeout = setTimeout(() => {
+            triggerClose();
+        }, duration);
+    }
