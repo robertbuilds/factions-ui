@@ -6,6 +6,15 @@ The interface displays factions, members, leaders, and staff with interactive an
 ## Preview
 
 ![Preview](https://i.imgur.com/CBmGQpK.png)
+
+## Live Preview
+
+You can view the interface live here:
+
+https://your-demo-link.com
+
+⚠️ For the **best experience**, press **F11** to enter fullscreen mode.
+
 ## Features
 
 * 🎮 Modern faction cards UI
