@@ -5,11 +5,7 @@ The interface displays factions, members, leaders, and staff with interactive an
 
 ## Preview
 
-![Preview 1](https://imgur.com/a/JcADt4I)
-![Preview 2]()
-![Preview 3]()
-![Preview 4]()
-
+![Preview](https://i.imgur.com/CBmGQpK.png)
 ## Features
 
 * 🎮 Modern faction cards UI
