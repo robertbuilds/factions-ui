@@ -294,6 +294,24 @@
         }
     }
 
+    @media (max-width: 900px) and (max-height: 700px) {
+        .ui-faction {
+            width: 100vw !important;
+            height: 100vh !important;
+            border-radius: 0;
+        }
+
+        body {
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden;
+        }
+
+        header {
+            display: none;
+        }
+    }
+
     .close-ui-btn {
         position: fixed;
         top: 3vh;
