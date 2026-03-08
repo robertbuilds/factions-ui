@@ -15,7 +15,8 @@ You can view the interface live here:
 View Live Preview
 </a>
 <br><br>
-⚠️ For the best experience, press F11 to enter fullscreen mode.
+
+⚠️ For the **best experience**, press **F11** to enter fullscreen mode.
 
 ## Features
 
