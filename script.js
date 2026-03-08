@@ -201,18 +201,15 @@
                 const cardRect = card.getBoundingClientRect();
                 const gridRect = grid.getBoundingClientRect();
 
-                // Verificăm vizibilitatea reală
                 const isFullyVisible = (cardRect.top >= gridRect.top - 5) && (cardRect.bottom <= gridRect.bottom + 5);
 
                 if (!isFullyVisible) {
-                    // Înghețăm cardul vizual sus ca să nu cadă
                     card.classList.add('locked-hover');
                     card.style.setProperty('transform', 'translateY(-15px) translateZ(0)', 'important');
                     card.style.setProperty('transition', 'transform 0.3s ease', 'important');
                     
                     grid.style.pointerEvents = 'none';
 
-                    // Calcul scroll manual la centru
                     const targetScrollTop = grid.scrollTop + (cardRect.top - gridRect.top) - (gridRect.height / 2) + (cardRect.height / 2);
 
                     grid.scrollTo({
@@ -234,10 +231,9 @@
 
                 if (card.classList.contains('capacity-animating')) {
                     showNotification("Așteaptă până când interfața este încărcată complet!");
-                    return; // Oprim execuția ca să nu deschidă cardul
+                    return; 
                 }
 
-                // Păstrăm blocajul pentru celelalte animații de UI (ca să nu faci spam de click)
                 if (isAnimating || activeOriginalCard || activeClone) return;
 
                 card.style.transition = 'none';
@@ -245,7 +241,6 @@
 
                 const uiRect = uiFaction.getBoundingClientRect();
 
-                // Preluăm mărimile fizice, reale, care exclud deformarea 3D
                 const exactWidth = card.offsetWidth;
                 const exactHeight = card.offsetHeight;
 
@@ -475,11 +470,9 @@
             card.dataset.targetCurrent = parseInt(parts[0]);
             card.dataset.maxMembers = parseInt(parts[1]);
 
-            // Stare inițială: cifrele la 0, bara la 0%
             membersCountSpan.textContent = `0 / ${card.dataset.maxMembers}`;
             barFill.style.width = '0%';
             
-            // Marcăm cardul ca fiind "în animație" încă de la început
             card.classList.add('capacity-animating');
         });
 
@@ -491,10 +484,9 @@
                 if (card && !card.classList.contains('card-visible')) {
                     observer.unobserve(entry.target);
 
-                    // Delay pentru intrarea cardului (picat de sus)
                     setTimeout(() => {
                         card.classList.add('card-visible');
-                        // Pornim numărătoarea și bara simultan
+
                         runSyncAnimation(card);
                     }, index * 190); 
                 }
@@ -521,26 +513,20 @@
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                // Easing: face animația să încetinească spre final (smooth)
                 const ease = 1 - Math.pow(1 - progress, 3);
 
-                // ACTUALIZARE SIMULTANĂ
-                // 1. Cifrele
                 const currentNum = Math.floor(targetCurrent * ease);
                 membersCountSpan.textContent = `${currentNum} / ${maxMembers}`;
 
-                // 2. Bara (calculăm procentul exact din progres)
                 const currentWidth = (targetPercent * ease).toFixed(2);
                 barFill.style.width = currentWidth + '%';
 
                 if (progress < 1) {
                     requestAnimationFrame(frame);
                 } else {
-                    // Final fix
                     membersCountSpan.textContent = `${targetCurrent} / ${maxMembers}`;
                     barFill.style.width = targetPercent + '%';
                     
-                    // ABIA ACUM scoatem clasa, permițând click-ul
                     card.classList.remove('capacity-animating');
                 }
             }
@@ -548,8 +534,7 @@
         }
     }
 
-    // --- FUNCȚIE GLOBALĂ PENTRU NOTIFICĂRI ---
-    function showNotification(message, duration = 3000) { // Default 4 secunde
+    function showNotification(message, duration = 3000) { 
         let container = document.getElementById('notification-container');
         
         if (!container) {
@@ -558,7 +543,6 @@
             document.querySelector('.ui-faction').appendChild(container);
         }
 
-        // Creăm structura completă a notificării
         const notif = document.createElement('div');
         notif.className = 'custom-notification';
         notif.innerHTML = `
@@ -586,26 +570,22 @@
 
         const triggerClose = () => {
             notif.classList.remove('show');
-            clearTimeout(hideTimeout); // Oprim timer-ul dacă dăm click pe X
+            clearTimeout(hideTimeout);
             
             setTimeout(() => {
                 if (notif.parentNode) notif.remove();
-            }, 400); // Așteptăm să se termine efectul de slide out
+            }, 400); 
         };
 
-        // Eveniment pe click pe X
         closeBtn.addEventListener('click', triggerClose);
 
-        // Animăm intrarea
         setTimeout(() => {
             notif.classList.add('show');
             
-            // După ce a intrat pe ecran, pornim golirea barei fix pe durata timer-ului
             progressBar.style.transition = `width ${duration}ms linear`;
             progressBar.style.width = '0%';
         }, 10); 
 
-        // Timer-ul de auto-închidere
         hideTimeout = setTimeout(() => {
             triggerClose();
         }, duration);
