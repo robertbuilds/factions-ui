@@ -11,7 +11,7 @@ The interface displays factions, members, leaders, and staff with interactive an
 
 You can view the interface live here:
 
-https://your-demo-link.com
+https://robertbuilds.github.io/factions-ui
 
 ⚠️ For the **best experience**, press **F11** to enter fullscreen mode.
 
