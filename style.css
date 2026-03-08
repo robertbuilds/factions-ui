@@ -1,4 +1,4 @@
-@font-face {
+    @font-face {
         font-family: 'Outfit';
         src: url('fonts/Outfit-Regular.ttf') format('truetype');
         font-weight: 400;
@@ -1314,4 +1314,5 @@
             pointer-events: auto !important;
             animation: warningFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
         }
+
     }
