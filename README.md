@@ -5,7 +5,7 @@ The interface displays factions, members, leaders, and staff with interactive an
 
 ## Preview
 
-![Preview](https://i.imgur.com/CBmGQpK.png)
+![Preview](https://i.imgur.com/ZWG6HAg.png)
 
 ## Live Preview
 
