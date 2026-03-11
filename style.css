@@ -107,11 +107,11 @@
     .logo-section {
         position: relative;
         background: rgba(20, 20, 20, 0.5);
-        padding: 22px 14px 0px 14px;
+        padding: 40px 14px 10px 14px;
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
         text-align: center;
-        height: 117px;
+        height: 120px;
         width: 210px;   
         min-width: 250px;
         display: flex;
@@ -149,7 +149,7 @@
         color: var(--green-color);
         text-shadow: 0 0 2vh rgba(46, 204, 113, 0.4);
         text-transform: uppercase;
-        font-size: 1.2vh;
+        font-size: 1.4vh;
         transform: translateY(1vh);
     }
 
@@ -516,7 +516,7 @@
     }
 
     .info-section h2 {
-        font-size: 22   px;
+        font-size: 22px;
         margin-bottom: 0.5vh;
         color: #ffffff;
         font-weight: 700;
@@ -1314,5 +1314,4 @@
             pointer-events: auto !important;
             animation: warningFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
         }
-
     }
